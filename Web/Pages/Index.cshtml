@@ -6,5 +6,51 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <canvas id="myChart" width="400" height="200"></canvas>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Mock data for testing
+        const data = {
+            "1": 30.1,
+            "2": 17.6,
+            "3": 12.5,
+            "4": 9.7,
+            "5": 7.9,
+            "6": 6.7,
+            "7": 5.8,
+            "8": 5.1,
+            "9": 4.6
+        };
+
+        // Extract labels and values
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+
+        // Render the Chart.js chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Benford Law Distribution',
+                    data: values,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
