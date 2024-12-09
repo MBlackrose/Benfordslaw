@@ -14,7 +14,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         // Mock data for testing
-        const data = {
+        const standard_data = {
             "1": 30.1,
             "2": 17.6,
             "3": 12.5,
@@ -27,21 +27,22 @@
         };
 
         // Extract labels and values
-        const labels = Object.keys(data);
-        const values = Object.values(data);
+        const labels = Object.keys(standard_data);
+        const values = Object.values(standard_data);
 
         // Render the Chart.js chart
         const ctx = document.getElementById('myChart').getContext('2d');
         new Chart(ctx, {
-            type: 'bar',
+            type: 'line', // Changed to 'line'
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Benford Law Distribution',
+                    label: 'Kunde1',
                     data: values,
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
+                    borderWidth: 1,
+                    fill: false // Ensures the area under the line isn't filled
                 }]
             },
             options: {
