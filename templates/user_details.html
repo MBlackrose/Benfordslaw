@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+</head>
+<body>
+    <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+    <p><strong>Company:</strong> {{ user.company }}</p>
+    <p><strong>Address:</strong> {{ user.address }}</p>
+    <h2>Invoice Analysis</h2>
+    <canvas id="fraudChart" width="400" height="400"></canvas>
+
+    <script>
+        const ctx = document.getElementById('fraudChart').getContext('2d');
+        const invoices = {{ user.invoices | safe }};
+        const data = {
+            labels: invoices.map((_, i) => `Invoice ${i + 1}`),
+            datasets: [{
+                label: 'Invoice Values',
+                data: invoices,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
+        const config = {
+            type: 'bar',
+            data: data,
+        };
+        new Chart(ctx, config);
+    </script>
+</body>
+</html>
