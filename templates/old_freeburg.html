@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+            text-align: left;
+        }
+        .btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-danger {
+            background-color: red;
+        }
+        .btn-success {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Information</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Client Number</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Company</th>
+            </tr>
+        </thead>
+        <tbody id="customerTableBody">
+            <!-- Content will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Load customer data from the JSON file
+        fetch('/static/customers_data.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // Parse the JSON response
+            })
+            .then(customers => {
+                // Populate the table with customer data
+                const tableBody = document.getElementById('customerTableBody');
+                customers.forEach(customer => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${customer.clientnumber}</td>
+                        <td>${customer.firstname}</td>
+                        <td>${customer.lastname}</td>
+                        <td>${customer.company}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading customer data:', error);
+            });
+    </script>
+    
+    
+    
+</body>
+</html>
