@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kundenanalyse Bericht</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .summary {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            color: #34495e;
+        }
+        .risk {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .recommendations {
+            background-color: #27ae60;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kundenanalyse Bericht</h1>
+
+        <div class="summary">
+            <h2>Zusammenfassung</h2>
+            <p>Dieser Bericht enthält eine Analyse der Kundenaktivitäten, um potenzielle Anomalien und Risiken zu identifizieren. Die Ergebnisse basieren auf den gesammelten Transaktionsdaten und Benford's Law.</p>
+        </div>
+
+        <div class="section">
+            <h2>Anomalien</h2>
+            <p>Es wurden folgende Anomalien festgestellt:</p>
+            <ul>
+                <li>Ungewöhnlich hohe Transaktionen am 12. Dezember 2024.</li>
+                <li>Diskrepanzen in der Verteilung der ersten Ziffern der Transaktionen im Vergleich zu Benford's Law.</li>
+                <li>Verdächtige Häufung von Transaktionen in Kategorie "Sonstiges".</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Risikoanalyse</h2>
+            <div class="risk">
+                <p>Das Risiko für betrügerische Aktivitäten wird als hoch eingestuft. Es wird empfohlen, diese Aktivitäten zu überwachen und weitere Untersuchungen durchzuführen.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Empfohlene Maßnahmen</h2>
+            <div class="recommendations">
+                <p>1. Überprüfen Sie die ungewöhnlich hohen Transaktionen manuell.<br>
+                   2. Analysieren Sie Transaktionen, die von der erwarteten Verteilung abweichen.<br>
+                   3. Implementieren Sie strengere Überwachungsmaßnahmen für die Kategorie "Sonstiges".<br>
+                   4. Informieren Sie die zuständigen Stellen, falls betrügerische Aktivitäten bestätigt werden.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Visualisierung</h2>
+            <p>Die Diagramme zeigen die Verteilung der Transaktionen im Vergleich zu Benford's Law sowie identifizierte Anomalien.</p>
+            <img src="https://via.placeholder.com/750x300" alt="Beispiel-Diagramm">
+        </div>
+
+        <button onclick="window.location.href='dashboard.html'">Zurück zum Dashboard</button>
+    </div>
+</body>
+</html>

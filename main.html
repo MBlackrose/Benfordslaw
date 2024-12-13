@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benford's Law Diagramm</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            transition: background-color 0.5s;
+            margin: 0;
+            padding: 0;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100vh;
+            padding: 20px;
+        }
+        .customer-info {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .customer-info div {
+            margin: 0 10px;
+        }
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+            gap: 10px;
+            flex-grow: 1;
+        }
+        .chart {
+            flex: 1 1 calc(50% - 10px);
+            max-height: 45%;
+        }
+        .status {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .button-container button:hover {
+            background-color: #34495e;
+        }
+    </style>
+</head>   
+<body>
+    <div class="main-container">
+        <!-- Kundeninfo oben links -->
+        <div class="customer-info">
+            <div><strong>Kunden Nr:</strong> <span id="kundenNr">-</span></div>
+            <div><strong>Vorname:</strong> <span id="vorname">-</span></div>
+            <div><strong>Nachname:</strong> <span id="nachname">-</span></div>
+            <div><strong>Betriebsname:</strong> <span id="betriebsname">-</span></div>
+            <div><strong>Zeitraum:</strong> <span id="zeitraum">-</span></div>
+        </div>
+
+        <div id="status" class="status">Keine Anomalien</div>
+
+        <div class="chart-container">
+            <div class="chart">
+                <canvas id="benfordsChart"></canvas>
+            </div>
+            <div class="chart">
+                <canvas id="yearlyChart"></canvas>
+            </div>
+            <div class="chart">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+            <div class="chart">
+                <canvas id="incomeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button onclick="window.location.href='zweite.html'">Report Analyse</button>
+        </div>
+    </div>
+
+    <script>
+        // Simuliertes Backend-Datenabruf
+        const customers = [
+            { kundenNr: "12345", vorname: "Max", nachname: "Mustermann", betriebsname: "Musterbetrieb GmbH", zeitraum: "01.01.2023 - 31.12.2023", warning: true },
+            { kundenNr: "67890", vorname: "Anna", nachname: "Müller", betriebsname: "Beispiel AG", zeitraum: "01.01.2022 - 31.12.2022", warning: false },
+            { kundenNr: "54321", vorname: "John", nachname: "Doe", betriebsname: "Tech Solutions", zeitraum: "01.01.2021 - 31.12.2021", warning: true }
+        ];
+
+        function loadCustomerInfo(customer) {
+            document.getElementById('kundenNr').innerText = customer.kundenNr;
+            document.getElementById('vorname').innerText = customer.vorname;
+            document.getElementById('nachname').innerText = customer.nachname;
+            document.getElementById('betriebsname').innerText = customer.betriebsname;
+            document.getElementById('zeitraum').innerText = customer.zeitraum;
+
+            const statusElement = document.getElementById('status');
+            if (customer.warning) {
+                document.body.style.backgroundColor = 'rgba(200, 50, 50, 0.3)';
+                statusElement.innerText = 'Anomalie';
+                statusElement.style.color = 'darkred';
+            } else {
+                document.body.style.backgroundColor = 'white';
+                statusElement.innerText = 'Keine Anomalien';
+                statusElement.style.color = 'green';
+            }
+        }
+
+        // Beispiel: Automatisch ersten Kunden laden
+        loadCustomerInfo(customers[0]);
+
+        // Benford's Law Chart
+        const benfordsCtx = document.getElementById('benfordsChart').getContext('2d');
+        new Chart(benfordsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                datasets: [
+                    {
+                        label: 'Verteilung',
+                        data: [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6],
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    },
+                    {
+                        label: "Benford's Law",
+                        data: [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6],
+                        type: 'line',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 2,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+            },
+        });
+
+        // Yearly Chart
+        const yearlyCtx = document.getElementById('yearlyChart').getContext('2d');
+        new Chart(yearlyCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Jahresumsatz',
+                    data: [120, 150, 170, 200, 220, 240, 300, 280, 250, 220, 180, 150],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                }],
+            },
+        });
+
+        // Quartal Chart
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                datasets: [{
+                    label: 'Quartalsumsatz',
+                    data: [500, 700, 800, 600],
+                    backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                }],
+            },
+        });
+
+        // Income Chart
+        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        new Chart(incomeCtx, {
+            type: 'bar',
+            data: {
+                labels: ['2020', '2021', '2022', '2023'],
+                datasets: [{
+                    label: 'Jahreinkommen',
+                    data: [1800, 2000, 2200, 2500],
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                }],
+            },
+        });
+    </script>
+</body>
+</html>
