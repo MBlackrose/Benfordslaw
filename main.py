@@ -41,18 +41,28 @@ def fraud_check():
     return jsonify(serializable_customers)
 
 
+# Temporary storage for selected customer data
+selected_customer = {}
+
 @app.route('/view_customer', methods=['POST'])
 def view_customer():
     global selected_customer
     selected_customer = request.get_json()
     print("Selected Customer:", selected_customer)  # Debugging
-    return '', 204
+    return '', 204  # No Content response
+
+@app.route('/view_customer_data', methods=['GET'])
+def view_customer_data():
+    if not selected_customer:
+        return jsonify({"error": "No customer data available"}), 404
+    return jsonify(selected_customer)
 
 @app.route('/anomaly_manager')
 def anomaly_manager():
     if not selected_customer:
-        return redirect(url_for('customer_info'))  # Redirect if no customer is selected
-    return render_template('anomaly_manager.html')
+        return redirect(url_for('customer_info'))  # Redirect to the main page if no customer is selected
+    return render_template('anomaly_manager.html')  # Serve the anomaly manager page
+
 
 @app.route('/anomaly_manager_data', methods=['GET'])
 def anomaly_manager_data():
