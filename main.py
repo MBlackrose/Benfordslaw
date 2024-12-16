@@ -1,8 +1,11 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from benfordslaw import benfordslaw
 import numpy as np
 
 app = Flask(__name__)
+
+# Temporary storage for selected customer data
+selected_customer = {}
 
 # Fraud detection function
 def check_fraud(invoices):
@@ -10,17 +13,15 @@ def check_fraud(invoices):
     results = bl.fit(np.array(invoices))
     return results['P'] < bl.alpha
 
-# Serve the main HTML page
 @app.route('/')
 def customer_info():
-    return render_template('new_freeburg.html')  # No need for a leading slash
+    return render_template('new_freeburg.html')
 
-# Fraud check endpoint
 @app.route('/fraud_check', methods=['POST'])
 def fraud_check():
-    customers = request.get_json()  # Expecting JSON data from frontend
-    print(customers)  # Debugging helper to inspect incoming data
+    customers = request.get_json()  # Expecting JSON data from the frontend
 
+    # Perform fraud analysis on each customer
     for customer in customers:
         invoices = customer.get('invoices', [])
         customer['fraud'] = check_fraud(invoices) if invoices else False
@@ -33,11 +34,31 @@ def fraud_check():
             "firstname": customer.get("firstname"),
             "lastname": customer.get("lastname"),
             "company": customer.get("company"),
-            "fraud": bool(customer.get("fraud", False)),  # Ensure 'fraud' is a boolean
+            "fraud": bool(customer.get("fraud", False)),  # Explicitly ensure 'fraud' is a boolean
         }
         serializable_customers.append(serializable_customer)
 
     return jsonify(serializable_customers)
+
+
+@app.route('/view_customer', methods=['POST'])
+def view_customer():
+    global selected_customer
+    selected_customer = request.get_json()
+    print("Selected Customer:", selected_customer)  # Debugging
+    return '', 204
+
+@app.route('/anomaly_manager')
+def anomaly_manager():
+    if not selected_customer:
+        return redirect(url_for('customer_info'))  # Redirect if no customer is selected
+    return render_template('anomaly_manager.html')
+
+@app.route('/anomaly_manager_data', methods=['GET'])
+def anomaly_manager_data():
+    if not selected_customer:
+        return jsonify({"error": "No customer selected"}), 404
+    return jsonify(selected_customer)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -54,20 +54,17 @@
     </table>
 
     <script>
-        // Load customer data from the JSON file
+        // Load customer data and display it in the table
         fetch('/static/customers_data.json')
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response.json();
             })
             .then(customers => {
-                // Send customer data to the backend for fraud detection
                 return fetch('/fraud_check', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(customers), // Send the entire JSON
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(customers),
                 });
             })
             .then(response => {
@@ -84,16 +81,32 @@
                         <td>${customer.lastname}</td>
                         <td>${customer.company}</td>
                         <td>
-                            ${customer.fraud 
-                                ? '<button class="btn btn-danger">Anomaly</button>' 
-                                : '<button class="btn btn-success">Okay</button>'}
+                            <button 
+                                class="btn ${customer.fraud ? 'btn-danger' : 'btn-success'}" 
+                                onclick="viewCustomer(${encodeURIComponent(JSON.stringify(customer))})">
+                                ${customer.fraud ? 'Anomaly' : 'Okay'}
+                            </button>
                         </td>
                     `;
                     tableBody.appendChild(row);
                 });
             })
             .catch(error => console.error('Error:', error));
+    
+        // Function to handle customer selection
+        function viewCustomer(customer) {
+            fetch('/view_customer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: customer,
+            })
+            .then(() => {
+                window.location.href = '/anomaly_manager'; // Redirect to anomaly_manager.html
+            })
+            .catch(error => console.error('Error sending customer data:', error));
+        }
     </script>
+    
     
     
 </body>
