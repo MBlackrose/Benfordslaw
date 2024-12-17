@@ -65,7 +65,7 @@ selected_customer = {}
 def view_customer():
     global selected_customer
     selected_customer = request.get_json()
-    print("Selected Customer:", selected_customer)  # Debugging
+    #print("Selected Customer:", selected_customer)  # Debugging
     return '', 204  # No Content response
 
 @app.route('/view_customer_data', methods=['GET'])
