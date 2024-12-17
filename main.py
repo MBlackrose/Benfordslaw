@@ -11,6 +11,7 @@ selected_customer = {}
 def check_fraud(invoices):
     bl = benfordslaw(alpha=0.05, method='chi2')
     results = bl.fit(np.array(invoices))
+    print(results)
     return results['P'] < bl.alpha
 
 @app.route('/')
@@ -24,7 +25,20 @@ def fraud_check():
     # Perform fraud analysis on each customer
     for customer in customers:
         invoices = customer.get('invoices', [])
-        customer['fraud'] = check_fraud(invoices) if invoices else False
+        if invoices:
+            # Run the Benford's Law analysis again to get full results
+            bl = benfordslaw(alpha=0.05, method='chi2')
+            results = bl.fit(np.array(invoices))
+            
+            # Check for fraud using the existing function
+            customer['fraud'] = check_fraud(invoices)
+            
+            # Extract and store first-digit percentages
+            percentage_emp = results['percentage_emp']
+            customer['first_digit_percentages'] = {int(row[0]): row[1] for row in percentage_emp}
+        else:
+            customer['fraud'] = False
+            customer['first_digit_percentages'] = {}
 
     # Ensure all returned data is JSON serializable
     serializable_customers = []
@@ -34,7 +48,10 @@ def fraud_check():
             "firstname": customer.get("firstname"),
             "lastname": customer.get("lastname"),
             "company": customer.get("company"),
-            "fraud": bool(customer.get("fraud", False)),  # Explicitly ensure 'fraud' is a boolean
+            "fraud": bool(customer.get("fraud", False)),
+            "invoices": customer.get("invoices", []),
+            "invoices_date": customer.get("invoices_date", []),
+            "first_digit_percentages": customer.get("first_digit_percentages", {})
         }
         serializable_customers.append(serializable_customer)
 

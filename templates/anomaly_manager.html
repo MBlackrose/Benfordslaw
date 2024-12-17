@@ -125,10 +125,12 @@
                 } else {
                     document.body.style.backgroundColor = 'white';
                     statusElement.innerText = 'Keine Anomalien';
-                    statusElement.style.color = 'green';
+                    statusElement.style.color = 'rgba(50, 150, 150, 1)';
                 }
     
                 // Render Benford's Law Chart
+                const firstDigitPercentages = customer.first_digit_percentages || {};
+                const observedPercentages = Array.from({ length: 9 }, (_, i) => firstDigitPercentages[i + 1] || 0);
                 const benfordsCtx = document.getElementById('benfordsChart').getContext('2d');
                 new Chart(benfordsCtx, {
                     type: 'bar',
@@ -137,23 +139,34 @@
                         datasets: [
                             {
                                 label: 'Invoice Distribution',
-                                data: customer.invoices || [],
+                                data: observedPercentages, // Observed percentages
                                 backgroundColor: 'rgba(75, 192, 192, 0.5)',
                             },
                             {
                                 label: "Benford's Law",
                                 data: [30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6],
                                 type: 'line',
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                borderWidth: 2,
+                                backgroundColor: 'rgba(255, 99, 132, 1)',
                             },
                         ],
                     },
                     options: {
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function (value) {
+                                        return value + '%'; // Add percentage sign
+                                    },
+                                },
+                            },
+                        },
                         responsive: true,
+                        animation: {
+                            duration: 2000,
+                        },
                     },
                 });
-    
+
                 // Render Yearly Chart
                 const yearlyCtx = document.getElementById('yearlyChart').getContext('2d');
                 new Chart(yearlyCtx, {
@@ -167,6 +180,12 @@
                                 borderColor: 'rgba(75, 192, 192, 1)',
                             },
                         ],
+                    },
+                    options: {
+                        responsive: true,
+                        animation: {
+                            duration: 2000, // Animation duration in milliseconds (3 seconds)
+                        },
                     },
                 });
     
@@ -184,6 +203,12 @@
                             },
                         ],
                     },
+                    options: {
+                        responsive: true,
+                        animation: {
+                            duration: 2000, // Animation duration in milliseconds (3 seconds)
+                        },
+                    },
                 });
     
                 // Render Yearly Income Chart
@@ -199,6 +224,12 @@
                                 backgroundColor: 'rgba(255, 159, 64, 0.5)',
                             },
                         ],
+                    },
+                    options: {
+                        responsive: true,
+                        animation: {
+                            duration: 2000, // Animation duration in milliseconds (3 seconds)
+                        },
                     },
                 });
             })
