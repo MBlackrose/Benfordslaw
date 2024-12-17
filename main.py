@@ -11,7 +11,7 @@ selected_customer = {}
 def check_fraud(invoices):
     bl = benfordslaw(alpha=0.05, method='chi2')
     results = bl.fit(np.array(invoices))
-    print(results)
+    #print(results)
     return results['P'] < bl.alpha
 
 @app.route('/')
