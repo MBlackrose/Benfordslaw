@@ -51,3 +51,9 @@ benfordslaw-app-1  | 172.18.0.1 - - [18/Dec/2024 14:24:00] "POST /fraud_check HT
 
 The server is running in the background, and a test page is ready for you at: [http://127.0.0.1:5000](http://127.0.0.1:5000/)
 
+## Explanation
+![grafik](https://github.com/user-attachments/assets/39ce715f-0bac-4dce-a239-e8493a9eaab1)
+
+> The idea is to add an extra column to the user table. In case of an anomaly, the user will be notified with "anomaly," and for more details, they can open the Anomaly Manager.
+It is important to understand that our code does not directly interact with the user database. Everything operates via Flask.
+
