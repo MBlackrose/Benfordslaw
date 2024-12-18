@@ -1,0 +1,12 @@
+services:
+  benfordslaw-app:
+    build:
+      context: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./static/customers_data.json:/app/static/customers_data.json  # Mount customers_data.json
+      - ./templates/new_freeburg.html:/app/templates/new_freeburg.html  # Mount new_freeburg.html
+    environment:
+      - FLASK_ENV=development
+    command: python main.py

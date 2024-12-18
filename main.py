@@ -1,8 +1,13 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, jsonify, render_template, redirect, url_for, send_from_directory
 from benfordslaw import benfordslaw
 import numpy as np
+import os
 
 app = Flask(__name__)
+
+# Path to mounted static and template files
+HOST_STATIC_PATH = '/app/static'  # Inside container
+HOST_TEMPLATE_PATH = '/app/templates'
 
 # Temporary storage for selected customer data
 selected_customer = {}
@@ -11,29 +16,24 @@ selected_customer = {}
 def check_fraud(invoices):
     bl = benfordslaw(alpha=0.05, method='chi2')
     results = bl.fit(np.array(invoices))
-    #print(results)
     return results['P'] < bl.alpha
 
 @app.route('/')
 def customer_info():
+    # Serve the mounted new_freeburg.html
     return render_template('new_freeburg.html')
 
 @app.route('/fraud_check', methods=['POST'])
 def fraud_check():
-    customers = request.get_json()  # Expecting JSON data from the frontend
+    customers = request.get_json()
 
     # Perform fraud analysis on each customer
     for customer in customers:
         invoices = customer.get('invoices', [])
         if invoices:
-            # Run the Benford's Law analysis again to get full results
             bl = benfordslaw(alpha=0.05, method='chi2')
             results = bl.fit(np.array(invoices))
-            
-            # Check for fraud using the existing function
             customer['fraud'] = check_fraud(invoices)
-            
-            # Extract and store first-digit percentages
             percentage_emp = results['percentage_emp']
             customer['first_digit_percentages'] = {int(row[0]): row[1] for row in percentage_emp}
         else:
@@ -41,9 +41,8 @@ def fraud_check():
             customer['first_digit_percentages'] = {}
 
     # Ensure all returned data is JSON serializable
-    serializable_customers = []
-    for customer in customers:
-        serializable_customer = {
+    serializable_customers = [
+        {
             "clientnumber": customer.get("clientnumber"),
             "firstname": customer.get("firstname"),
             "lastname": customer.get("lastname"),
@@ -53,20 +52,16 @@ def fraud_check():
             "invoices_date": customer.get("invoices_date", []),
             "first_digit_percentages": customer.get("first_digit_percentages", {})
         }
-        serializable_customers.append(serializable_customer)
+        for customer in customers
+    ]
 
     return jsonify(serializable_customers)
-
-
-# Temporary storage for selected customer data
-selected_customer = {}
 
 @app.route('/view_customer', methods=['POST'])
 def view_customer():
     global selected_customer
     selected_customer = request.get_json()
-    #print("Selected Customer:", selected_customer)  # Debugging
-    return '', 204  # No Content response
+    return '', 204
 
 @app.route('/view_customer_data', methods=['GET'])
 def view_customer_data():
@@ -77,9 +72,8 @@ def view_customer_data():
 @app.route('/anomaly_manager')
 def anomaly_manager():
     if not selected_customer:
-        return redirect(url_for('customer_info'))  # Redirect to the main page if no customer is selected
-    return render_template('anomaly_manager.html')  # Serve the anomaly manager page
-
+        return redirect(url_for('customer_info'))
+    return render_template('anomaly_manager.html')
 
 @app.route('/anomaly_manager_data', methods=['GET'])
 def anomaly_manager_data():
@@ -88,4 +82,4 @@ def anomaly_manager_data():
     return jsonify(selected_customer)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')  # Run Flask on all available interfaces
