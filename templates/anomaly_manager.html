@@ -97,9 +97,9 @@
             </div>
         </div>
 
-        <div class="button-container">
+<!--        <div class="button-container">
             <button onclick="window.location.href='zweite.html'">Report Analyse</button>
-        </div>
+        </div>-->
     </div>
 
     <script>
@@ -177,7 +177,7 @@
                             {
                                 label: 'Invoices Over Time',
                                 data: customer.invoices || [],
-                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 1)', // Color
                             },
                         ],
                     },
@@ -219,7 +219,7 @@
                         labels: extractYears(customer.invoices_date),
                         datasets: [
                             {
-                                label: 'Yearly Income',
+                                label: 'Invoices Yearly',
                                 data: aggregateYearlyData(customer.invoices_date, customer.invoices),
                                 backgroundColor: 'rgba(255, 159, 64, 0.5)',
                             },
