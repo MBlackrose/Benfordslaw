@@ -206,11 +206,11 @@
                     options: {
                         responsive: true,
                         animation: {
-                            duration: 2000, // Animation duration in milliseconds (3 seconds)
+                            duration: 2000, // Animation duration in milliseconds
                         },
                     },
                 });
-    
+
                 // Render Yearly Income Chart
                 const incomeCtx = document.getElementById('incomeChart').getContext('2d');
                 new Chart(incomeCtx, {
@@ -237,18 +237,46 @@
     
         // Helper function to aggregate quarterly data
         function aggregateQuarterlyData(dates, amounts) {
-            const quarterlyData = [0, 0, 0, 0];
-            if (!dates || !amounts) return quarterlyData;
-    
+            const quarterlyData = [0, 0, 0, 0]; // Q1, Q2, Q3, Q4
+            if (!dates || !amounts) {
+                console.error("Dates or amounts are missing:", { dates, amounts });
+                return quarterlyData;
+            }
+
+            const currentYear = new Date().getFullYear(); // Get the current year
+            console.log("Current Year:", currentYear);
+
             dates.forEach((date, index) => {
-                const month = new Date(date).getMonth(); // Extract month
-                const quarter = Math.floor(month / 3); // Map month to quarter
-                quarterlyData[quarter] += amounts[index];
+                // Match the "MMM YYYY" format using a regular expression
+                const match = date.match(/^([A-Za-z]{3}) (\d{4})$/);
+                if (!match) {
+                    console.error("Invalid date format:", date);
+                    return;
+                }
+
+                // Extract month and year
+                const [_, monthStr, yearStr] = match;
+                const monthMap = {
+                    Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+                };
+                const month = monthMap[monthStr];
+                const year = parseInt(yearStr, 10);
+
+                // Process only current-year invoices
+                if (year === currentYear) {
+                    const quarter = Math.floor(month / 3); // Map month to quarter (0 = Q1, 1 = Q2, etc.)
+                    console.log(`Adding ${amounts[index]} to Q${quarter + 1} (Month: ${monthStr})`);
+                    quarterlyData[quarter] += amounts[index];
+                } else {
+                    console.log(`Skipping invoice: ${date} (${year})`);
+                }
             });
-    
+
+            console.log("Quarterly Data:", quarterlyData);
             return quarterlyData;
         }
-    
+
         // Helper function to extract unique years
         function extractYears(dates) {
             if (!dates) return [];
