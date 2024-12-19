@@ -19,7 +19,7 @@ fetch('/view_customer_data')
             statusElement.style.color = 'darkred';
         } else {
             document.body.style.backgroundColor = 'white';
-            statusElement.innerText = 'Keine Anomalien';
+            statusElement.innerText = 'Keine Anomalie';
             statusElement.style.color = 'black';
         }
 
