@@ -4,37 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Information</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f4f4f4;
-            text-align: left;
-        }
-        .btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-        }
-        .btn-danger {
-            background-color: red;
-        }
-        .btn-success {
-            background-color: green;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/new_freeburg.css') }}">
+    <script src="{{ url_for('static', filename='js/new_script.js') }}"></script>
 </head>
 <body>
     <h1>Customer Information</h1>
@@ -52,66 +23,5 @@
             <!-- Content will be dynamically added here -->
         </tbody>
     </table>
-
-    <script>
-        // Load customer data from the JSON file
-        fetch('/static/customers_data.json')
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                return response.json();
-            })
-            .then(customers => {
-                // Send customer data to the backend for fraud detection
-                return fetch('/fraud_check', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(customers), // Send the entire JSON
-                });
-            })
-            .then(response => {
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                return response.json();
-            })
-            .then(data => {
-                const tableBody = document.getElementById('customerTableBody');
-                data.forEach((customer, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${customer.clientnumber}</td>
-                        <td>${customer.firstname}</td>
-                        <td>${customer.lastname}</td>
-                        <td>${customer.company}</td>
-                        <td>
-                            <button class="btn ${customer.fraud ? 'btn-danger' : 'btn-success'}"
-                                    onclick="handleButtonClick(${index})">
-                                ${customer.fraud ? 'Anomaly' : 'Okay'}
-                            </button>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-
-                    // Attach data to a global array for safe access
-                    window.customerData = window.customerData || [];
-                    window.customerData[index] = customer;
-                });
-            })
-            .catch(error => console.error('Error:', error));
-
-        // Handle button clicks
-        function handleButtonClick(index) {
-            const customer = window.customerData[index]; // Retrieve customer data by index
-            fetch('/view_customer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(customer),
-            }).then(() => {
-                window.open('/anomaly_manager', '_blank'); // Open in a new tab
-            }).catch(error => console.error('Error sending customer data:', error));
-        }
-    </script>
 </body>
 </html>

@@ -5,8 +5,8 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./static/customers_data.json:/app/static/customers_data.json  # Mount customers_data.json
-      - ./templates/new_freeburg.html:/app/templates/new_freeburg.html  # Mount new_freeburg.html
+      - ./static:/app/static  # Mount static files
+      - ./templates:/app/templates  # Mount template files
     environment:
       - FLASK_ENV=development
     command: python main.py
