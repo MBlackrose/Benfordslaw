@@ -4,45 +4,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benford's Law Diagramm</title>
+    <title>Anomaly Manager</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/anomaly_manager.css') }}">
-    <script src="{{ url_for('static', filename='js/anomaly_script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/anomaly_script.js') }}" defer></script>
 </head>
 
 <body>
-    <div class="main-container">
-        <!-- Kundeninfo oben links -->
-        <div class="customer-info">
-            <div><strong>Kunden Nr:</strong> <span id="kundenNr">-</span></div>
-            <div><strong>Vorname:</strong> <span id="vorname">-</span></div>
-            <div><strong>Nachname:</strong> <span id="nachname">-</span></div>
-            <div><strong>Betriebsname:</strong> <span id="betriebsname">-</span></div>
-            <div><strong>Zeitraum:</strong> <span id="zeitraum">-</span></div>
+    <header class="topbar">
+        <div class="topbar-left">
+            <a href="/" class="back-btn">&#8592; Back</a>
+            <span class="app-title">Anomaly Manager</span>
         </div>
+        <div id="status" class="status-badge">Keine Anomalie</div>
+    </header>
 
-        <div id="status" class="status">Keine Anomalien</div>
+    <main class="dashboard">
+        <section class="customer-card">
+            <div class="info-item">
+                <span class="info-label">Client Nr.</span>
+                <span id="kundenNr" class="info-value">—</span>
+            </div>
+            <div class="info-divider"></div>
+            <div class="info-item">
+                <span class="info-label">First Name</span>
+                <span id="vorname" class="info-value">—</span>
+            </div>
+            <div class="info-divider"></div>
+            <div class="info-item">
+                <span class="info-label">Last Name</span>
+                <span id="nachname" class="info-value">—</span>
+            </div>
+            <div class="info-divider"></div>
+            <div class="info-item">
+                <span class="info-label">Company</span>
+                <span id="betriebsname" class="info-value">—</span>
+            </div>
+            <div class="info-divider"></div>
+            <div class="info-item">
+                <span class="info-label">Period</span>
+                <span id="zeitraum" class="info-value">—</span>
+            </div>
+        </section>
 
-        <div class="chart-container">
-            <div class="chart">
-                <canvas id="benfordsChart"></canvas>
+        <section class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <span class="chart-title">Benford's Law Distribution</span>
+                    <span class="chart-subtitle">First-digit frequency vs. expected</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="benfordsChart"></canvas>
+                </div>
             </div>
-            <div class="chart">
-                <canvas id="yearlyChart"></canvas>
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <span class="chart-title">Invoice Timeline</span>
+                    <span class="chart-subtitle">All invoices over time</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="yearlyChart"></canvas>
+                </div>
             </div>
-            <div class="chart">
-                <canvas id="monthlyChart"></canvas>
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <span class="chart-title">Quarterly Revenue</span>
+                    <span class="chart-subtitle">Most recent year breakdown</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
             </div>
-            <div class="chart">
-                <canvas id="incomeChart"></canvas>
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <span class="chart-title">Yearly Income</span>
+                    <span class="chart-subtitle">Total invoiced amount per year</span>
+                </div>
+                <div class="chart-body">
+                    <canvas id="incomeChart"></canvas>
+                </div>
             </div>
-        </div>
-
-        <!--        <div class="button-container">
-            <button onclick="window.location.href='zweite.html'">Report Analyse</button>
-        </div>-->
-    </div>
-
+        </section>
+    </main>
 </body>
 
 </html>

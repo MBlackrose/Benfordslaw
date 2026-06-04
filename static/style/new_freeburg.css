@@ -1,29 +1,284 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
+
+:root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-raised: #1c2128;
+    --border: #30363d;
+    --text-primary: #e6edf3;
+    --text-muted: #8b949e;
+    --accent-green: #3fb950;
+    --accent-red: #f85149;
+    --accent-green-bg: rgba(63, 185, 80, 0.10);
+    --accent-red-bg: rgba(248, 81, 73, 0.12);
+    --row-hover: rgba(255, 255, 255, 0.03);
+    --radius: 10px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font);
+    min-height: 100vh;
+}
+
+/* ── Topbar ───────────────────────────────────────── */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    width: 22px;
+    height: 22px;
+    color: #58a6ff;
+    flex-shrink: 0;
+}
+
+.brand-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+}
+
+.brand-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+
+.topbar-stats {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface-raised);
+}
+
+.stat-pill--ok {
+    border-color: rgba(63, 185, 80, 0.35);
+    background: var(--accent-green-bg);
+}
+
+.stat-pill--fraud {
+    border-color: rgba(248, 81, 73, 0.35);
+    background: var(--accent-red-bg);
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.stat-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-pill--ok .stat-value  { color: var(--accent-green); }
+.stat-pill--fraud .stat-value { color: var(--accent-red); }
+
+/* ── Page body ────────────────────────────────────── */
+.page-body {
+    padding: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ── Table card ───────────────────────────────────── */
+.table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.table-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.table-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.table-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+/* ── Table ────────────────────────────────────────── */
 table {
     width: 100%;
     border-collapse: collapse;
 }
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-th {
-    background-color: #f4f4f4;
+
+thead th {
+    padding: 10px 20px;
     text-align: left;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
 }
-.btn {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    color: white;
+
+tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background: var(--row-hover);
+}
+
+tbody tr.row-fraud {
     cursor: pointer;
 }
-.btn-danger {
-    background-color: red;
+
+tbody tr.row-fraud:hover {
+    background: rgba(248, 81, 73, 0.05);
 }
-.btn-success {
-    background-color: green;
+
+tbody td {
+    padding: 13px 20px;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+td.cell-id {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+}
+
+td.cell-name {
+    font-weight: 500;
+}
+
+td.cell-company {
+    color: var(--text-muted);
+}
+
+/* ── Status badge ─────────────────────────────────── */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 11px;
+    border-radius: 20px;
+    border: 1px solid;
+    cursor: default;
+    transition: opacity 0.2s;
+}
+
+.status-badge--ok {
+    color: var(--accent-green);
+    border-color: rgba(63, 185, 80, 0.4);
+    background: var(--accent-green-bg);
+}
+
+.status-badge--fraud {
+    color: var(--accent-red);
+    border-color: rgba(248, 81, 73, 0.4);
+    background: var(--accent-red-bg);
+    cursor: pointer;
+}
+
+.status-badge--fraud:hover {
+    background: rgba(248, 81, 73, 0.2);
+}
+
+.badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.status-badge--fraud .badge-dot {
+    animation: pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+/* ── Skeleton loading ─────────────────────────────── */
+.skeleton-row td {
+    padding: 12px 20px;
+}
+
+.skeleton {
+    height: 18px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--surface-raised) 25%, #21262d 50%, var(--surface-raised) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 640px) {
+    .topbar { padding: 0 16px; flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; gap: 10px; }
+    .topbar-stats { gap: 6px; }
+    .page-body { padding: 16px; }
+    thead th, tbody td { padding: 10px 12px; }
 }

@@ -1,58 +1,74 @@
-// Load customer data from the JSON file
+window.customerData = [];
+
 fetch('/static/customers_data.json')
     .then(response => {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return response.json();
     })
-    .then(customers => {
-        // Send customer data to the backend for fraud detection
-        return fetch('/fraud_check', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(customers), // Send the entire JSON
-        });
-    })
+    .then(customers => fetch('/fraud_check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customers),
+    }))
     .then(response => {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return response.json();
     })
     .then(data => {
+        window.customerData = data;
+
+        const fraudCount = data.filter(c => c.fraud).length;
+        document.getElementById('statTotal').innerText = data.length;
+        document.getElementById('statOk').innerText = data.length - fraudCount;
+        document.getElementById('statFraud').innerText = fraudCount;
+        document.getElementById('tableHint').innerText =
+            fraudCount > 0 ? `${fraudCount} anomaly detected` : 'All records clean';
+
         const tableBody = document.getElementById('customerTableBody');
+        tableBody.innerHTML = '';
+
         data.forEach((customer, index) => {
             const row = document.createElement('tr');
+            if (customer.fraud) row.classList.add('row-fraud');
+
             row.innerHTML = `
-                <td>${customer.clientnumber}</td>
-                <td>${customer.firstname}</td>
+                <td class="cell-id">${customer.clientnumber}</td>
+                <td class="cell-name">${customer.firstname}</td>
                 <td>${customer.lastname}</td>
-                <td>${customer.company}</td>
+                <td class="cell-company">${customer.company}</td>
                 <td>
-                    <button class="btn ${customer.fraud ? 'btn-danger' : 'btn-success'}"
-                            onclick="handleButtonClick(${index})">
-                        ${customer.fraud ? 'Anomaly' : 'Okay'}
-                    </button>
+                    ${customer.fraud
+                        ? `<span class="status-badge status-badge--fraud" onclick="openAnomalyManager(${index})">
+                               <span class="badge-dot"></span>Anomaly
+                           </span>`
+                        : `<span class="status-badge status-badge--ok">
+                               <span class="badge-dot"></span>Clean
+                           </span>`
+                    }
                 </td>
             `;
-            tableBody.appendChild(row);
 
-            // Attach data to a global array for safe access
-            window.customerData = window.customerData || [];
-            window.customerData[index] = customer;
+            if (customer.fraud) {
+                row.addEventListener('click', (e) => {
+                    if (!e.target.closest('.status-badge')) openAnomalyManager(index);
+                });
+            }
+
+            tableBody.appendChild(row);
         });
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('tableHint').innerText = 'Failed to load data';
+    });
 
-// Handle button clicks
-function handleButtonClick(index) {
-    const customer = window.customerData[index]; // Retrieve customer data by index
+function openAnomalyManager(index) {
+    const customer = window.customerData[index];
     fetch('/view_customer', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(customer),
-    }).then(() => {
-        window.open('/anomaly_manager', '_blank'); // Open in a new tab
-    }).catch(error => console.error('Error sending customer data:', error));
+    })
+    .then(() => window.open('/anomaly_manager', '_blank'))
+    .catch(error => console.error('Error:', error));
 }

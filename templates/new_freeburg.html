@@ -3,25 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Information</title>
+    <title>Fraud Finder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style/new_freeburg.css') }}">
-    <script src="{{ url_for('static', filename='js/new_script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/new_script.js') }}" defer></script>
 </head>
 <body>
-    <h1>Customer Information</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Client Number</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Company</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="customerTableBody">
-            <!-- Content will be dynamically added here -->
-        </tbody>
-    </table>
+    <header class="topbar">
+        <div class="topbar-brand">
+            <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <div>
+                <div class="brand-name">Fraud Finder</div>
+                <div class="brand-sub">Benford's Law Analysis</div>
+            </div>
+        </div>
+        <div class="topbar-stats">
+            <div class="stat-pill">
+                <span class="stat-label">Total</span>
+                <span class="stat-value" id="statTotal">—</span>
+            </div>
+            <div class="stat-pill stat-pill--ok">
+                <span class="stat-label">Clean</span>
+                <span class="stat-value" id="statOk">—</span>
+            </div>
+            <div class="stat-pill stat-pill--fraud">
+                <span class="stat-label">Anomalies</span>
+                <span class="stat-value" id="statFraud">—</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-body">
+        <div class="table-card">
+            <div class="table-card-header">
+                <span class="table-title">Customer Overview</span>
+                <span class="table-hint" id="tableHint">Analysing…</span>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Company</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTableBody">
+                        <tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr>
+                        <tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr>
+                        <tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr>
+                        <tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr>
+                        <tr class="skeleton-row"><td colspan="5"><div class="skeleton"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
